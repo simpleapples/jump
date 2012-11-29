@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=0.5,minimum-scale=0.5,maximum-scale=1,user-scalable=no" />
+        <title>Jump</title>
+        <style>
+            body {
+                margin:0 auto;
+            }
+            #title {
+                position:absolute;
+                top:3px;
+                left:0;
+                width:640px;
+                z-index:2;
+                text-align:center;
+                text-shadow:1px 1px 5px #000;
+                color:#fff;
+            }
+            h1 {
+                font-size:48px;
+            }
+            #gamecontent {
+                position:absolute;
+                top:0;
+                left:0;
+                z-index:1;
+            }
+        </style>
+        <script type="text/javascript" src="main.js"></script>
+    </head>
+    <body>
+        <div id="title"><h1>CloudJump</h1></div>
+        <canvas id="gamecontent"></canvas>
+        <div id="display" style="position:absolute; top:100; left:0; width:300px; height:30px; color:#000; z-index:999;"></div>
+        <script>
+            init();
+            play();
+        </script>
+    </body>
+</html>
