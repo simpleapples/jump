@@ -123,8 +123,8 @@ function refreshCanvas() {
             DIECOUNT += 1;
         }
     }
-    if(GAMEBOARDARR[0].y <= 20 * GAMESPEED) {
-        TARGETPOSY = -100; 
+    if(GAMEBOARDARR[0].y <= 20 * GAMESPEED && GAMEBOARDARR.length <= 1) {
+        TARGETPOSY = 0; 
     }
     drawBoard();
     drawBody();
