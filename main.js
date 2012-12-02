@@ -22,6 +22,7 @@ TARGETPOSX = GAMEWIDTH / 2;
 TARGETPOSY = GAMEHEIGHT * 0.3;
 DIECOUNT = 0;
 SCORE = 0;
+START = 0;
 function GAMEBOARD(x, y) {
     this.x = x;
     this.y = y;
@@ -65,11 +66,11 @@ function refreshCanvas() {
         if(GAMEBOARDARR.length > 0) {
             if(BOARDCOUNT == 0) {
                 var random = Math.random();
-                random *= 100;
+                random *= 10;
                 random = parseInt(random);
-                if(random >= 1) {
+                //if(random != 5) {
                     addRanBoard();
-                }
+                //}
                 BOARDCOUNT = 10;
             } else {
                 BOARDCOUNT--;
@@ -123,8 +124,9 @@ function refreshCanvas() {
             DIECOUNT += 1;
         }
     }
-    if(GAMEBOARDARR[0].y <= 20 * GAMESPEED && GAMEBOARDARR.length <= 1) {
-        TARGETPOSY = 0; 
+    if(GAMEBOARDARR[0].y <= 20 * GAMESPEED && START == 0) {
+        TARGETPOSY = 0;
+        START = 1; 
     }
     drawBoard();
     drawBody();
