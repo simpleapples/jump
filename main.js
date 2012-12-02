@@ -20,6 +20,8 @@ DISCOUNT = 0;
 BOARDCOUNT = 0;
 TARGETPOSX = GAMEWIDTH / 2;
 TARGETPOSY = GAMEHEIGHT * 0.3;
+DIECOUNT = 0;
+SCORE = 0;
 function GAMEBOARD(x, y) {
     this.x = x;
     this.y = y;
@@ -32,7 +34,7 @@ function init() {
 	GAMEHEIGHT = document.documentElement.clientHeight;
 	GAMEWIDTH = document.documentElement.clientWidth;
 	var title = document.getElementById("title");
-	title.style.width = GAMEWIDTH;
+	title.style.width = GAMEWIDTH + "px";
     var gameContent = document.getElementById("gamecontent");
     gameContent.height = GAMEHEIGHT; 
     gameContent.width = GAMEWIDTH;
@@ -53,15 +55,19 @@ function addRanBoard() {
     GAMEBOARDARR.push(singleBoard);     //Add board to board array.
     //alert(GAMEBOARDARR[0].y);
 }
+function disScore() {
+    var disscore = document.getElementById("disscore");
+    disscore.innerHTML = "SCORE:" + SCORE + "</br> DEAD:" + DIECOUNT;
+}
 function refreshCanvas() {
     console.log(GAMEBOARDARR.length);
     if(DISCOUNT == 0) {
         if(GAMEBOARDARR.length > 0) {
             if(BOARDCOUNT == 0) {
                 var random = Math.random();
-                random *= 10;
+                random *= 100;
                 random = parseInt(random);
-                if(random != 5) {
+                if(random >= 1) {
                     addRanBoard();
                 }
                 BOARDCOUNT = 10;
@@ -87,7 +93,8 @@ function refreshCanvas() {
     for(var i = 0; i < GAMEBOARDARR.length; i++) {
         document.getElementById("display").innerHTML = "JumpHeight:" + DIRCOUNT + "</br>JumpPositionY:" + TARGETPOSY + "</br>BoardCount:" + GAMEBOARDARR.length + "</br>FrameRate:" + FRAMERATE;    
         if(TARGETPOSY == GAMEBOARDARR[i].y && TARGETPOSX >= GAMEBOARDARR[i].x - GAMEBLOCKW && TARGETPOSX <= GAMEBOARDARR[i].x + GAMEBLOCKW&& DIRCOUNT == 0) {
-            DIRCOUNT = 20;
+            DIRCOUNT = 20; //score.
+            SCORE += 1;
             document.getElementById("display").innerHTML = "ok";
         }
     }
@@ -97,16 +104,31 @@ function refreshCanvas() {
             TARGETPOSY -= GAMESPEED;
         }
         */
-        TARGETPOSY -= GAMESPEED ;
+        TARGETPOSY -= GAMESPEED;
+        if(TARGETPOSY < 20 * GAMESPEED) {
+            for(i = 0; i < GAMEBOARDARR.length; i++) {
+                //alert(GAMEBOARDARR.length);
+                GAMEBOARDARR[i].y += GAMESPEED;
+                if(GAMEBOARDARR[i].y > GAMEHEIGHT) {
+                    GAMEBOARDARR.shift();
+                }
+                console.log("x:" + GAMEBOARDARR[i].x + " y:" + GAMEBOARDARR[i].y);
+            }
+        }
         DIRCOUNT--;
     } else {
         TARGETPOSY += GAMESPEED;
-        if(TARGETPOSY > 900) {
-            TARGETPOSY = 0;
+        if(TARGETPOSY > GAMEHEIGHT) {
+            TARGETPOSY = 0; //die.
+            DIECOUNT += 1;
         }
+    }
+    if(GAMEBOARDARR[0].y <= 20 * GAMESPEED) {
+        TARGETPOSY = -100; 
     }
     drawBoard();
     drawBody();
+    disScore();
 }
 function refreshBody() {
     var count = 0;
