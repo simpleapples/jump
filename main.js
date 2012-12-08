@@ -4,174 +4,161 @@
 #       Author: Zhiya Zang
 #        Email: zangzhiya@gmail.com
 #     HomePage: http://www.simpleapples.com
-#      Version: 0.0.1
-#   LastChange: 2012-11-22 16:04:32
+#      Version: 0.1.0
+#   LastChange: 2012-12-08 12:57:25
 #      History:
 =============================================================================*/
-GAMEHEIGHT = 900;
-GAMEWIDTH = 640;
-GAMEBLOCKH = 100;
-GAMEBLOCKW = 100;
-GAMEBOARDARR = new Array();
-GAMESPEED = 20;
-FRAMERATE = 25;
-DIRCOUNT = 15;
-DISCOUNT = 0;
-BOARDCOUNT = 0;
-TARGETPOSX = GAMEWIDTH / 2;
-TARGETPOSY = GAMEHEIGHT * 0.3;
-DIECOUNT = 0;
-SCORE = 0;
-START = 0;
-function GAMEBOARD(x, y) {
+var CJ = {};
+CJ.GAMEHEIGHT = 900;
+CJ.GAMEWIDTH = 640;
+CJ.GAMEBLOCKH = 100;
+CJ.GAMEBLOCKW = 100;
+CJ.GAMEBOARDARR = new Array();
+CJ.GAMESPEED = 20;
+CJ.FRAMERATE = 25;
+CJ.DIRCOUNT = 15;
+CJ.DISCOUNT = 0;
+CJ.BOARDCOUNT = 0;
+CJ.TARGETPOSX = CJ.GAMEWIDTH / 2;
+CJ.TARGETPOSY = CJ.GAMEHEIGHT * 0.3;
+CJ.DIECOUNT = 0;
+CJ.SCORE = 0;
+CJ.START = 0;
+CJ.GAMEBOARD = function (x, y) {
     this.x = x;
     this.y = y;
 }
-imgCloud = new Image();
-imgCloud.src = "img/cloudsmall.png";
-imgBody = new Image();
-imgBody.src = "img/jumpsmall.png";
+CJ.IMGCLOUD = new Image();
+CJ.IMGCLOUD.src = "img/cloudsmall.png";
+CJ.IMGBODY = new Image();
+CJ.IMGBODY.src = "img/jumpsmall.png";
 function init() {
-	GAMEHEIGHT = document.documentElement.clientHeight;
-	GAMEWIDTH = document.documentElement.clientWidth;
-	var title = document.getElementById("title");
-	title.style.width = GAMEWIDTH + "px";
-    var gameContent = document.getElementById("gamecontent");
-    gameContent.height = GAMEHEIGHT; 
-    gameContent.width = GAMEWIDTH;
+	var title = document.getElementById("title"),
+        gameContent = document.getElementById("gamecontent");
+	CJ.GAMEHEIGHT = document.documentElement.clientHeight;
+	CJ.GAMEWIDTH = document.documentElement.clientWidth;
+	title.style.width = CJ.GAMEWIDTH + "px";
+    gameContent.height = CJ.GAMEHEIGHT; 
+    gameContent.width = CJ.GAMEWIDTH;
     refreshBody();
     hideUrlBar();
 }
 function play() {
-    console.log("start");
-    interTimer = setInterval(refreshCanvas, 1000 / FRAMERATE);
+    interTimer = setInterval(refreshCanvas, 1000 / CJ.FRAMERATE);
 }
 function stop() {
     clearInterval(interTimer);
 }
 function addRanBoard() {
-    var random = Math.random();
-    random *= (GAMEWIDTH - GAMEBLOCKW);    //Get board initial position.
-    var singleBoard = new GAMEBOARD(parseInt(random), 0);  //Create new board.
-    GAMEBOARDARR.push(singleBoard);     //Add board to board array.
-    //alert(GAMEBOARDARR[0].y);
+    var random = Math.random(),
+        singleBoard;
+    random *= (CJ.GAMEWIDTH - CJ.GAMEBLOCKW);    //Get board initial position.
+    singleBoard = new CJ.GAMEBOARD(parseInt(random), 0);  //Create new board.
+    CJ.GAMEBOARDARR.push(singleBoard);     //Add board to board array.
 }
 function disScore() {
     var disscore = document.getElementById("disscore");
-    disscore.innerHTML = "SCORE:" + SCORE + "</br> DEAD:" + DIECOUNT;
+    disscore.innerHTML = "SCORE:" + CJ.SCORE + "</br> DEAD:" + CJ.DIECOUNT;
 }
 function refreshCanvas() {
-    //console.log(GAMEBOARDARR.length);
-    if(DISCOUNT == 0) {
-        if(GAMEBOARDARR.length > 0) {
-            if(BOARDCOUNT == 0) {
-                //console.log("board");
-                var random = Math.random();
+    var random,
+        i;
+    if(CJ.DISCOUNT == 0) {
+        if(CJ.GAMEBOARDARR.length > 0) {
+            if(CJ.BOARDCOUNT == 0) {
+                random = Math.random();
                 random *= 10;
                 random = parseInt(random);
-                //if(random != 5) {
-                    addRanBoard();
-                //}
-                BOARDCOUNT = 3; // board span
+                addRanBoard();
+                CJ.BOARDCOUNT = 3; // board span
             } else {
-                BOARDCOUNT--;
+                CJ.BOARDCOUNT--;
             }
-            var i = 0;
-            for(i = 0; i < GAMEBOARDARR.length; i++) {
-                //alert(GAMEBOARDARR.length);
-                GAMEBOARDARR[i].y += GAMESPEED;
-                if(GAMEBOARDARR[i].y > GAMEHEIGHT) {
-                    GAMEBOARDARR.shift();
+            for(i = 0; i < CJ.GAMEBOARDARR.length; i++) {
+                CJ.GAMEBOARDARR[i].y += CJ.GAMESPEED;
+                if(CJ.GAMEBOARDARR[i].y > CJ.GAMEHEIGHT) {
+                    CJ.GAMEBOARDARR.shift();
                 }
-                //console.log("x:" + GAMEBOARDARR[i].x + " y:" + GAMEBOARDARR[i].y);
             }
         } else {
             addRanBoard();
         }
-        DISCOUNT = 2;
+        CJ.DISCOUNT = 2;
     } else {
-        DISCOUNT--;
+        CJ.DISCOUNT--;
     }
-    for(var i = 0; i < GAMEBOARDARR.length; i++) {
-        document.getElementById("display").innerHTML = "JumpHeight:" + DIRCOUNT + "</br>JumpPositionY:" + TARGETPOSY + "</br>BoardCount:" + GAMEBOARDARR.length + "</br>FrameRate:" + FRAMERATE;    
-        if(TARGETPOSY == GAMEBOARDARR[i].y && TARGETPOSX >= GAMEBOARDARR[i].x - GAMEBLOCKW && TARGETPOSX <= GAMEBOARDARR[i].x + GAMEBLOCKW&& DIRCOUNT == 0) {
-            DIRCOUNT = 15; //score.
-            SCORE += 1;
+    for(i = 0; i < CJ.GAMEBOARDARR.length; i++) {
+        document.getElementById("display").innerHTML = "JumpHeight:" + CJ.DIRCOUNT + "</br>JumpPositionY:" + CJ.TARGETPOSY + "</br>BoardCount:" + CJ.GAMEBOARDARR.length + "</br>FrameRate:" + CJ.FRAMERATE;    
+        if(CJ.TARGETPOSY == CJ.GAMEBOARDARR[i].y && CJ.TARGETPOSX >= CJ.GAMEBOARDARR[i].x - CJ.GAMEBLOCKW && CJ.TARGETPOSX <= CJ.GAMEBOARDARR[i].x + CJ.GAMEBLOCKW && CJ.DIRCOUNT == 0) {
+            CJ.DIRCOUNT = 15; //score.
+            CJ.SCORE += 1;
             document.getElementById("display").innerHTML = "ok";
         }
     }
-    if(DIRCOUNT != 0) {
-        /*
-        if(DIRCOUNT == 20 || DIRCOUNT == 18 || DIRCOUNT == 15 || DIRCOUNT == 11 || DIRCOUNT == 6 || DIRCOUNT == 1) {
-            TARGETPOSY -= GAMESPEED;
-        }
-        */
-        TARGETPOSY -= GAMESPEED;
-        if(TARGETPOSY < 15 * GAMESPEED) {
-            for(i = 0; i < GAMEBOARDARR.length; i++) {
-                //alert(GAMEBOARDARR.length);
-                GAMEBOARDARR[i].y += GAMESPEED;
-                if(GAMEBOARDARR[i].y > GAMEHEIGHT) {
-                    GAMEBOARDARR.shift();
+    if(CJ.DIRCOUNT != 0) {
+        CJ.TARGETPOSY -= CJ.GAMESPEED;
+        if(CJ.TARGETPOSY < 15 * CJ.GAMESPEED) {
+            for(i = 0; i < CJ.GAMEBOARDARR.length; i++) {
+                CJ.GAMEBOARDARR[i].y += CJ.GAMESPEED;
+                if(CJ.GAMEBOARDARR[i].y > CJ.GAMEHEIGHT) {
+                    CJ.GAMEBOARDARR.shift();
                 }
-                //console.log("x:" + GAMEBOARDARR[i].x + " y:" + GAMEBOARDARR[i].y);
             }
         }
-        DIRCOUNT--;
+        CJ.DIRCOUNT--;
     } else {
-        TARGETPOSY += GAMESPEED;
-        if(TARGETPOSY > GAMEHEIGHT) {
-            TARGETPOSY = 0; //die.
-            DIECOUNT += 1;
+        CJ.TARGETPOSY += CJ.GAMESPEED;
+        if(CJ.TARGETPOSY > CJ.GAMEHEIGHT) {
+            CJ.TARGETPOSY = 0; //die.
+            CJ.DIECOUNT += 1;
         }
     }
-    if(GAMEBOARDARR[0].y <= 15 * GAMESPEED && START == 0) {
-        TARGETPOSY = 0;
-        START = 1; 
+    if(CJ.GAMEBOARDARR[0].y <= 15 * CJ.GAMESPEED && CJ.START == 0) {
+        CJ.TARGETPOSY = 0;
+        CJ.START = 1; 
     }
     drawBoard();
     drawBody();
     disScore();
 }
 function refreshBody() {
-    var count = 0;
+    var count = 0,
+        rotate;
     if(window.DeviceOrientationEvent) {
         window.addEventListener('deviceorientation',function(event) {
-            var rotate = event.gamma / 70 * GAMEWIDTH;
-            TARGETPOSX = rotate + GAMEWIDTH / 2;
-            if(TARGETPOSX < 0) {
-                TARGETPOSX = 0;
+            rotate = event.gamma / 70 * CJ.GAMEWIDTH;
+            CJ.TARGETPOSX = rotate + CJ.GAMEWIDTH / 2;
+            if(CJ.TARGETPOSX < 0) {
+                CJ.TARGETPOSX = 0;
             }
-            if(TARGETPOSX > GAMEWIDTH - 100) {
-                TARGETPOSX = GAMEWIDTH - 100;
+            if(CJ.TARGETPOSX > CJ.GAMEWIDTH - 100) {
+                CJ.TARGETPOSX = CJ.GAMEWIDTH - 100;
             }
-            if(TARGETPOSY > GAMEHEIGHT) {
-                TARGETPOSY = 0;
+            if(CJ.TARGETPOSY > CJ.GAMEHEIGHT) {
+                CJ.TARGETPOSY = 0;
             }
         })
     }
 }
 function drawBody() {
-    var canvas = document.getElementById("gamecontent");
-    var context = canvas.getContext("2d");
-    context.drawImage(imgBody,TARGETPOSX,TARGETPOSY - GAMEBLOCKW);
+    var canvas = document.getElementById("gamecontent"),
+        context = canvas.getContext("2d");
+    context.drawImage(CJ.IMGBODY, CJ.TARGETPOSX, CJ.TARGETPOSY - CJ.GAMEBLOCKW);
 }
 function drawBoard() {
-    var canvas = document.getElementById("gamecontent");
-    var context = canvas.getContext("2d");
+    var canvas = document.getElementById("gamecontent"),
+        context = canvas.getContext("2d"),
+        i,
+        canvas,
+        context;
     context.beginPath();
     context.fillStyle = "#dbf1fe";
-    context.fillRect(0, 0, GAMEWIDTH, GAMEHEIGHT);
-    var i = 0;
-    for(i = 0; i < GAMEBOARDARR.length; i++) {
-        var canvas = document.getElementById("gamecontent");
-        var context = canvas.getContext("2d");
-        context.drawImage(imgCloud,GAMEBOARDARR[i].x, GAMEBOARDARR[i].y - GAMEBLOCKH / 2);
+    context.fillRect(0, 0, CJ.GAMEWIDTH, CJ.GAMEHEIGHT);
+    for(i = 0; i < CJ.GAMEBOARDARR.length; i++) {
+        canvas = document.getElementById("gamecontent");
+        context = canvas.getContext("2d");
+        context.drawImage(CJ.IMGCLOUD, CJ.GAMEBOARDARR[i].x, CJ.GAMEBOARDARR[i].y - CJ.GAMEBLOCKH / 2);
     }
-    //context.lineWidth = 1;
-    //context.strokeStyle = "#000";
-    //context.globalCompositeOperation = copy;
-    //context.stroke();
 }
 function hideUrlBar()
 {
